@@ -4,7 +4,7 @@
 #include <string>
 
 #define clear_cin() std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n')
-#define clear_screen() std::cout << "\033[2J\033[1;1H";
+#define clear_screen() std::cout << "\033[2J\033[1;1H"
 
 // questao 6
 // item 6.a.
@@ -58,7 +58,7 @@ int main() {
         std::cout << "Olá, " << nome_entrada << "! " \
                   << "Você tem " << idade_entrada << " anos." << std::endl;
     }
- 
+
     std::cout << std::endl;
 
     // item 2.b.
@@ -77,7 +77,7 @@ int main() {
         // item 3.a.
         int numero1;
         int numero2;
-    
+
         std::cout << "digite o 1o numero: ";
         std::cin >> numero1;
         clear_cin();
@@ -200,8 +200,6 @@ int main() {
 
             num--;
         }
-        
-        
     }
 
     std::cout << std::endl;
@@ -339,12 +337,12 @@ int main() {
         *ponteiro *= 2;
         std::cout << "Valor duplicado: " << numero \
                   << " (Valor pelo ponteiro: " << *ponteiro << ")" << std::endl;
-        
+
         referencia *= 3;
         std::cout << "Valor triplicado: " << numero \
                   << " (Valor pela referencia: " << referencia << ")" << std::endl;
     }
-    
+
     std::cout << std::endl;
 
     // item 8.b.
