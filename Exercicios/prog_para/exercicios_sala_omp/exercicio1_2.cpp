@@ -181,8 +181,9 @@ void resolver_equacoes() {
     std::cout << "Tempo total: " << tempo_total << std::endl;
     std::cout << "Total de equações com raízes reais: "
     << qtd_raizes_reais
-    << "(Sem raízes reais: " << (qtd_raizes_complexas) << std::endl;
+    << " (Sem raízes reais: " << (qtd_raizes_complexas) << ")" << std::endl;
 }
+
 /* 
  * Explicação:
  *      O objetivo da função resolver_equacoes é aplicar a fórmula de Bhaskara
@@ -212,7 +213,7 @@ void resolver_equacoes() {
 */
 
 int main() {
-    /* resolver_equacoes(); */
+    resolver_equacoes();
 
     return 0;
 }
