@@ -37,7 +37,7 @@ void sequential_for() {
     for (int item : vetor)
         /* Para cada iteração do loop, soma-se à soma o valor do item. */
         soma += item;
-    
+
     /* Obtém-se o segundo timestamp, logo após o fim do loop. */
     double t1 = omp_get_wtime();
 

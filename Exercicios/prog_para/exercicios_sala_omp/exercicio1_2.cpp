@@ -4,6 +4,8 @@
 #include <cmath>
 #include <limits>
 #include <omp.h>
+#include <cstdlib>
+#include <ctime>
 
 #define clear_cin() \
 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n')
@@ -108,8 +110,10 @@ resultado resolver_bhaskara(double a, double b, double c) {
 
 /* 2. crie uma entrada de dados onde o usuário decicirá a quantidade de equações
  * a serem resolvidas. Ao final, mostre o tempo gasto para resolver as equações,
- *  e o número de equações que possuem raízes reais e quantas não possuem. */
+ * e o número de equações que possuem raízes reais e quantas não possuem. */
 void resolver_equacoes() {
+    srand(time(NULL));
+
     int quantidade = 0;
     double tempo_total = 0.0;
     int qtd_raizes_reais = 0;
@@ -127,13 +131,9 @@ void resolver_equacoes() {
     }
 
     for (int i = 0; i < quantidade; i++) {
-        double a;
-        double b;
-        double c;
-
-        std::cout << "Digite os valores de A, B e C: ";
-        std::cin >> a >> b >> c;
-        clear_cin();
+        double a = rand() % 100 + 1;
+        double b = rand() % 101;
+        double c = rand() % 101;
 
         termos termos_eq = termos{a, b, c};
 
@@ -161,18 +161,15 @@ void resolver_equacoes() {
         resultados[i] = agg;
 
         tempo_total += tempo;
-        
+
         if (delta >= 0)
             qtd_raizes_reais++;
     }
 
-    for (resultados_agg agg : resultados) {
-        termos term = agg.termos_equacao;
-        resultado res = agg.resultado_equacao;
+    for (int i = 0; i < quantidade; i++) {
+        resultados_agg agg = resultados[i];
 
-        std::cout << std::get<0>(term) << "x^2 + (" <<
-        std::get<1>(term) << "x) + (" << std::get<2>(term) << ") = ("
-        << res.first << ", " << res.second << "); Tempo para executar: "
+        std::cout << "Tempo para executar equação " << i + 1 << ": "
         << agg.tempo << std::endl;
     }
 
@@ -196,9 +193,9 @@ void resolver_equacoes() {
  *  ções a serem resolvidas, e limpa-se o buffer da entrada de caracteres. Caso
  *  a quantidade de equações seja zero, imprime-se que não há equações a serem
  *  resolvidas e a função retorna. Se não, entra-se num loop, que preenche o ve-
- *  tor com os termos da equação: declaram-se os termos a, b, e c, pede-se que o
- *  usuário os dê valores, limpa-se o buffer de entrada, cria-se uma tupla com
- *  os valores de a, b, e c, cria-se a estrutura, inicializada com os valores da
+ *  tor com os termos da equação: declaram-se os termos a, b, e c, que são pre-
+ *  enchidos com valores aleatórios entre 0 e 100, cria-se uma tupla com os val-
+ *  ores de a, b, e c, cria-se a estrutura, inicializada com os valores da
  *  tupla, um par vazio, e tempo de execução 0, e armazena-se a estrutura no ve-
  *  tor. Depois, cria-se uma região de execuação em paralelo com loop for de re-
  *  dução, que será usado para incrementar o tempo total de execução e a quanti-

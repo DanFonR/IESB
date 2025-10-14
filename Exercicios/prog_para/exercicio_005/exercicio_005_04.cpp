@@ -50,7 +50,7 @@ void soma_quadrados_paralelo(double x[], double y[], double z[],
         o bloco. Isso evita múltiplos acessos ao mesmo recurso. */
         #pragma omp single
         qtd_threads = omp_get_num_threads();
-        
+
         /* for schedule(static) realiza o mesmo que somente for. A diretiva
         `schedule` indica distribuição da iteração em diferentes threads, e
         `static` indica que as iterações serão distribuídas em ordem entre as
