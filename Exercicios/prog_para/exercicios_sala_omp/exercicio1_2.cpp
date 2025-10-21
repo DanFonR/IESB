@@ -112,7 +112,7 @@ resultado resolver_bhaskara(double a, double b, double c) {
  * a serem resolvidas. Ao final, mostre o tempo gasto para resolver as equações,
  * e o número de equações que possuem raízes reais e quantas não possuem. */
 void resolver_equacoes() {
-    srand(time(NULL));
+    std::srand(std::time(NULL));
 
     int quantidade = 0;
     double tempo_total = 0.0;
@@ -131,9 +131,9 @@ void resolver_equacoes() {
     }
 
     for (int i = 0; i < quantidade; i++) {
-        double a = rand() % 100 + 1;
-        double b = rand() % 101;
-        double c = rand() % 101;
+        double a = std::rand() % 100 + 1;
+        double b = std::rand() % 101;
+        double c = std::rand() % 101;
 
         termos termos_eq = termos{a, b, c};
 
