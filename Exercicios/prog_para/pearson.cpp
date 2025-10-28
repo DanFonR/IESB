@@ -5,10 +5,8 @@
 #include <cstdlib>
 #include <omp.h>
 
-#define INTERVALO 4
-
-inline int para_classe(int valor) {
-    return (valor - 2) / INTERVALO;
+inline int para_classe(int valor, int min, int intervalo) {
+    return (valor - min) / intervalo;
 }
 
 inline double coef_pearson(double media, double desvio_padrao) {
@@ -17,34 +15,39 @@ inline double coef_pearson(double media, double desvio_padrao) {
 
 typedef struct {
     std::vector<int> classes;
-    int min;    
+    int min;
+    int intervalo;
 } class_mins;
 
-class_mins classes(std::vector<int> valores) {
-    std::vector<int> classes(valores.size(), 0);
+class_mins classes(std::vector<int> valores, int intervalo) {
     class_mins retorno;
 
     int min = valores[0];
+    int max = valores[0];
 
     #pragma omp parallel for
     for (int valor : valores) {
         #pragma omp critical
-        if (valor < min) min = valor;
+        {
+            if (valor < min) min = valor;
+            if (valor > max) max = valor;
+        }
     }
 
-    int min_int = para_classe(min);
+    std::vector<int> classes(para_classe(max, min, intervalo) + 1, 0);
 
     #pragma omp parallel for ordered
-    for (double valor : valores) {
+    for (int valor : valores) {
         #pragma omp ordered
         {
-            int classe = para_classe(valor);
-            classes[classe - min_int]++;
+            int classe = para_classe(valor, min, intervalo);
+            classes[classe]++;
         }
     }
 
     retorno.classes = classes;
-    retorno.min = min_int;
+    retorno.min = min;
+    retorno.intervalo = intervalo;
 
     return retorno;
 }
@@ -52,13 +55,14 @@ class_mins classes(std::vector<int> valores) {
 double media_agrupada(class_mins dados) {
     std::vector<int> classes = dados.classes;
     int min = dados.min;
+    int intervalo = dados.intervalo;
 
     size_t soma_freq = 0.0;
     double prods = 0.0;
 
     #pragma omp parallel for reduction(+:soma_freq, prods)
     for (size_t i = 0; i < classes.size(); i++) {
-        int xi = INTERVALO * (min + 1 + i);
+        int xi = (2 * min + intervalo * (2*i + 1)) / 2;
         prods += xi * classes[i];
         soma_freq += classes[i];
     }
@@ -69,6 +73,7 @@ double media_agrupada(class_mins dados) {
 double desvio_padrao_agrupado(class_mins dados) {
     std::vector<int> classes = dados.classes;
     int min = dados.min;
+    int intervalo = dados.intervalo;
 
     double desvio_padrao;
     double termo_1;
@@ -80,8 +85,8 @@ double desvio_padrao_agrupado(class_mins dados) {
 
     #pragma omp parallel for reduction(+:soma_xi, soma_xi2, soma_freq)
     for (size_t i = 0; i < classes.size(); i++) {
-        int xi = INTERVALO * (min + 1 + i);
-        soma_xi += xi; 
+        int xi = (2 * min + intervalo * (2*i + 1)) / 2;
+        soma_xi += xi;
         soma_xi2 += xi * xi;
         soma_freq += classes[i];
     }
@@ -103,8 +108,8 @@ void testa_cv(size_t tam_vetor) {
         pesos_kg[i] = rand() % 30 + 43;
     }
 
-    class_mins classes_alturas = classes(alturas_cm);
-    class_mins classes_pesos = classes(pesos_kg);
+    class_mins classes_alturas = classes(alturas_cm, 8);
+    class_mins classes_pesos = classes(pesos_kg, 4);
 
     double media_alturas = media_agrupada(classes_alturas);
     double desvio_alturas = desvio_padrao_agrupado(classes_alturas);
@@ -126,6 +131,6 @@ void testa_cv(size_t tam_vetor) {
 int main() {
     std::srand(std::time(NULL));
 
-    testa_cv(10000);
+    testa_cv(2);
     return 0;
 }
